@@ -162,6 +162,15 @@ and then create a container with the image you just built
 - now you should be able to port 2333/accounts on your ec2 and see account data
 - you should also be able to see the account-service registered with eureka 
 
+### 4. pushing an image to docker hub
+
+- log in on https://hub.docker.com/
+- create a repository
+- log into docker hub in the command line 
+> docker login --username=yourhubusername --email=youremail@company.com
+- create an image with the same tag as your repository (username/repository to uniquely identify)
+- push that image to docker hub
+> docker push [username]/[repository]
 
 # Docker Swarm
 - orchestration tool (Kubernetes is also an orchestration tool)
