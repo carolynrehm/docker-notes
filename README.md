@@ -83,19 +83,25 @@ Add the ec2-user to the docker grou so you can execute Docker commands without u
 > sudo usermod -a -G docker ec2-user
 
 -- log out and back in --
+> exit
+
+> ssh
+
+-- once you log back in you should be able to run the following command and it be recognized as the current user:
+
 > docker info 
 
 
 ### 2a. pull an image from dockerhub and create a container with it
 
-list images
-> docker ls 
+list images, shouldn't be any
+> docker images 
 
 pull container from dockerhub
 > docker pull hello-world 
 
 list images again, should see hello-world
-> docker ls 
+> docker images 
 
 list running processes, none should be running 
 > docker ps 
@@ -112,9 +118,20 @@ show active containers; hello-world will have terminated so  --all this will sho
 - each dockerhub repo is uniquely identified by the user/repo
 - we could do the same steps as in 2b and pull crehm/discovery and then run it; however, when we run an image that isn't in the current directory, docker will attempt to pull tha 
 
-> docker run crehm/dicovery
+> docker run btkruppa/dicovery -p [8761:8761]
 
+> docker run [image]
+> docker run [image] -p [hostPort:containerPort]
+- -p option publishes to a port, the first value being the port on the host machine (your linux instance) and 
+- -d option will run the container in detached mode (will open a separate terminal)
 
+take a look now at the images 
+> docker images
+
+and also the running processes
+> docker ps 
+
+you should see it up and running - go to your ec2 endpoint's port 8761 and see an instance of eureka running 
 
 ### 3. creating an image from a dockerfile
 create Dockerfile
@@ -126,17 +143,23 @@ edit file
 ``` Dockerfile
 FROM java:8 
 ADD https://s3.us-east-2.amazonaws.com/crehm-resources/account-service.jar .
-EXPOSE 2222
+EXPOSE 2333
 CMD java -jar account-service.jar
 ```
 -- the jar url here is the account service we created during our microservice week (spring boot app)
-- change the 
-- use maven to package spring boot app
+- change the eureka location to your ec2's currently hosted eureka's instance [http://ec2-xxx-xxx-xxx-xxx.compute-1.amazonaws.com:8761/eureka]
+- use maven to package spring boot app into a jar
+- host it in an s3 so that the car can be downloaded from the url to your ec2's container
+- you can use the url I have provided but it will not register itself with eureka
 
-> docker container stop [name or id]
+Now let's build our image using the Dockerfile
+> docker build -t account-service .
 
-### 4. 
+and then create a container with the image you just built
+> docker run account-service -p [2333:2333]
 
+- now you should be able to port 2333/accounts on your ec2 and see account data
+- you should also be able to see the account-service registered with eureka 
 
 
 # Docker Swarm
