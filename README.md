@@ -69,6 +69,7 @@ Building an Image with a Dockerfile
 # Docker Example
 
 ### 1. set up Docker on an Amazon Linux instance
+- create a linux instance on AWS, and ssh into it
 
 Update Linux instance
 > sudo yum update -y
